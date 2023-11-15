@@ -6,10 +6,11 @@ import { useContext, useEffect, useState } from "react";
 
 const Page = () => {
   const allPostRef = collection(db, "allPosts");
-  const { user, userLogId }: any = useContext(MyContext);
+  const { userLogId }: any = useContext(MyContext);
   const [userPostData, setUserPostData] = useState([]);
   const [like, setLike] = useState(false);
   const [loading, setLoading] = useState(true);
+  console.log("userPostData", userPostData);
 
   useEffect(() => {
     getAllPostsByUserId(userLogId);
@@ -63,9 +64,9 @@ const Page = () => {
               <div className="flex items-center gap-x-2">
                 <div
                   className="w-9 h-9 rounded-full bg-no-repeat bg-cover bg-center"
-                  style={{ backgroundImage: `url(${user?.imageUrl})` }}
+                  style={{ backgroundImage: `url(${data?.userImg})` }}
                 ></div>
-                <h2 className="text-sm font-semibold">{user?.fullName}</h2>
+                <h2 className="text-sm font-semibold">{data?.username}</h2>
               </div>
               <div className="flex items-center gap-x-2">
                 <svg
@@ -141,12 +142,14 @@ const Page = () => {
             </div>
           </div>
         ))
-      ) : userPostData.length === 0 && (
+      ) : (
+        userPostData.length === 0 && (
           <div className="h-[calc(100vh-56px)] flex items-center">
             <h1 className="text-[#71767b] text-2xl text-center uppercase">
               Your posts are like a blank canvas—lets add some color! 🎨
             </h1>
           </div>
+        )
       )}
     </div>
   );

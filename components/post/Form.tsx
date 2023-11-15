@@ -1,6 +1,6 @@
 "use client";
 import { PhotoIcon } from "@heroicons/react/24/solid";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import ShowPost from "./ShowPost";
 import { addDoc, collection, getDoc } from "firebase/firestore";
 import { db, storage } from "../firebaseConfig";
@@ -13,10 +13,10 @@ interface ImagePath {
 export default function Form() {
   const [description, setDescription] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [imagePath, setImagePath] = useState<any>();
+  const [imagePath, setImagePath] = useState<any>("");
   const [showPostUrl, setShowPostUrl] = useState<any>("");
   const [showViewPostButton, setShowViewPostButton] = useState<boolean>(false);
-  const { userLogId, setPostData, postData }: any = useContext(MyContext);
+  const { userLogId, setPostData, postData, user }: any = useContext(MyContext);
 
   const handleFileChange = (event: any) => {
     const selectedFile = event.target.files[0];
@@ -48,6 +48,9 @@ export default function Form() {
         imgage: imageUrl,
         userId: userLogId,
         description: description,
+        userName: user.fullName,
+        userImg: user.imageUrl,
+        userEmail: user?.primaryEmailAddress?.emailAddress,
       });
       // Get the added document using getDoc
       const postDocSnap = await getDoc(res);
@@ -55,10 +58,15 @@ export default function Form() {
       const postData = postDocSnap.data();
       setPostData(postData);
       setLoading(false);
+      playAudio();
       setShowViewPostButton(true);
     } catch (error) {
       console.error("Error adding data to Firestore:", error);
     }
+  };
+  const playAudio = () => {
+    const audioElement = new Audio("mixkit-alert-quick-chime-766.wav"); // replace with the path to your audio file
+    audioElement.play();
   };
   return (
     <>

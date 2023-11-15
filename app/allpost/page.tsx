@@ -10,6 +10,7 @@ const Page = () => {
   const [userPostData, setUserPostData] = useState([]);
   const [like, setLike] = useState(false);
   const [loading, setLoading] = useState(true);
+  console.log("userPostData???????????", userPostData);
 
   const getAllPosts = async () => {
     const querySnapshot = await getDocs(allPostRef);
