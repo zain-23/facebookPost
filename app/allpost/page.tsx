@@ -59,9 +59,11 @@ const Page = () => {
               <div className="flex items-center gap-x-2">
                 <div
                   className="w-9 h-9 rounded-full bg-no-repeat bg-cover bg-center"
-                  style={{ backgroundImage: `url(${user?.imageUrl})` }}
+                  style={{ backgroundImage: `url(${data?.data?.userImg})` }}
                 ></div>
-                <h2 className="text-sm font-semibold">{user?.fullName}</h2>
+                <h2 className="text-sm font-semibold">
+                  {data?.data?.userName}
+                </h2>
               </div>
               <div className="flex items-center gap-x-2">
                 <svg
