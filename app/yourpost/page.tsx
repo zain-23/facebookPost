@@ -10,7 +10,6 @@ const Page = () => {
   const [userPostData, setUserPostData] = useState([]);
   const [like, setLike] = useState(false);
   const [loading, setLoading] = useState(true);
-  console.log("userPostData", userPostData);
 
   useEffect(() => {
     getAllPostsByUserId(userLogId);
@@ -104,9 +103,9 @@ const Page = () => {
             </div>
             <img src={data?.imgage} className="w-full" alt="" />
             <div className="px-2 py-2">
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
-                  className={`flex items-center col-span-1 gap-x-2 hover:bg-slate-200 rounded justify-center py-1 ${
+                  className={`flex items-center border border-gray-600 col-span-1 gap-x-2 hover:bg-gray-800 hover:text-white rounded justify-center py-1 ${
                     like ? "text-[#0866ff]" : "text-[#65676b]"
                   }`}
                   onClick={() => setLike(!like)}
@@ -121,7 +120,7 @@ const Page = () => {
                   </svg>
                   <span className="font-semibold">Like</span>
                 </button>
-                <button className="flex items-center col-span-1 gap-x-2 hover:bg-slate-200 rounded justify-center py-1 text-[#65676b]">
+                <button className="flex border items-center border-gray-600 col-span-1 gap-x-2 hover:bg-gray-800 hover:text-white rounded justify-center py-1 text-[#65676b]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

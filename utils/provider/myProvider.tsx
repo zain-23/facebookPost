@@ -16,11 +16,18 @@ const MyProvider = ({ children }: MyProviderProps) => {
   const email = user?.primaryEmailAddress?.emailAddress;
   const [userLogId, setUserLogId] = useState("");
   const [postData, setPostData] = useState();
+  const [userPostData, setUserPostData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const allPostRef = collection(db, "allPosts");
+
+  console.log(postData, "postData");
+
   const usersRef = collection(db, "users");
 
   useEffect(() => {
     storeUser();
     getSingleData();
+    getAllPosts();
   }, [fullName, imageUrl, email]);
   const storeUser = async () => {
     if (fullName && imageUrl && email) {
@@ -44,11 +51,22 @@ const MyProvider = ({ children }: MyProviderProps) => {
       setUserLogId(querySnapshot.docs[0].id);
     }
   };
-
-
-
+  const getAllPosts = async () => {
+    const querySnapshot = await getDocs(allPostRef);
+    const postsData: any = [];
+    querySnapshot.forEach((doc) => {
+      postsData.push({
+        id: doc.id,
+        data: doc.data(),
+      });
+    });
+    setUserPostData(postsData);
+    setLoading(false);
+  };
   return (
-    <MyContext.Provider value={{ user, userLogId, postData, setPostData }}>
+    <MyContext.Provider
+      value={{ user, userLogId, postData, setPostData, userPostData, loading }}
+    >
       {children}
     </MyContext.Provider>
   );

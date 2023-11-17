@@ -1,33 +1,46 @@
 "use client";
 import { db } from "@/components/firebaseConfig";
 import MyContext from "@/utils/context/createContext";
-import { collection, getDocs, query, where } from "firebase/firestore";
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  query,
+  updateDoc,
+  where,
+} from "firebase/firestore";
 import { useContext, useEffect, useState } from "react";
 
 const Page = () => {
   const allPostRef = collection(db, "allPosts");
-  const { user }: any = useContext(MyContext);
-  const [userPostData, setUserPostData] = useState([]);
+  const { user, userPostData, loading }: any = useContext(MyContext);
   const [like, setLike] = useState(false);
-  const [loading, setLoading] = useState(true);
-  console.log("userPostData???????????", userPostData);
 
-  const getAllPosts = async () => {
-    const querySnapshot = await getDocs(allPostRef);
-    const postsData: any = [];
-    querySnapshot.forEach((doc) => {
-      postsData.push({
-        id: doc.id,
-        data: doc.data(),
-      });
-    });
-    setUserPostData(postsData);
-    setLoading(false);
+  const handleLikes = async (id: any) => {
+    const selectedPostRef = doc(db, "allPosts", id);
+    const postDocSnapshot = await getDoc(selectedPostRef);
+    if (postDocSnapshot.exists()) {
+      const selectedData = postDocSnapshot.data();
+      if (
+        !selectedData.likes.some(
+          (like: any) => like.email === user.primaryEmailAddress.emailAddress
+        )
+      ) {
+        const updatedLikes = [
+          ...selectedData.likes,
+          { name: user.fullName, email: user.primaryEmailAddress.emailAddress },
+        ];
+        const res = await updateDoc(selectedPostRef, { likes: updatedLikes });
+        alert("liked post successfully.");
+
+        console.log("res", res);
+        console.log("Post liked successfully!");
+      } else {
+        alert("you has already liked this post.");
+      }
+    }
   };
-
-  useEffect(() => {
-    getAllPosts();
-  }, []);
   return (
     <div className="my-5 flex flex-col gap-y-10">
       {loading ? (
@@ -50,7 +63,7 @@ const Page = () => {
           </div>
         </div>
       ) : userPostData.length > 0 ? (
-        userPostData.map((data: any, index) => (
+        userPostData.map((data: any, index: number) => (
           <div
             className="shadow-2xl rounded-md bg-[#16181c] text-white"
             key={index}
@@ -100,13 +113,19 @@ const Page = () => {
               <p className="text-sm">{data?.data?.description}</p>
             </div>
             <img src={data?.data?.imgage} className="w-full" alt="" />
+            {data.data.likes.length > 0 && (
+              <div className="flex items-end gap-2">
+                <img src="./download.svg" className="w-5 mt-2 ml-4" alt="" />
+                <h2 className="text-sm font-bold">{data.data.likes.length}</h2>
+              </div>
+            )}
             <div className="px-2 py-2">
-              <div className="grid grid-cols-2">
+              <div className="grid grid-cols-2 gap-2">
                 <button
-                  className={`flex items-center col-span-1 gap-x-2 hover:bg-slate-200 rounded justify-center py-1 ${
+                  className={`flex items-center hover:text-white col-span-1 gap-x-2 hover:bg-gray-800 border border-gray-600 rounded justify-center py-1 ${
                     like ? "text-[#0866ff]" : "text-[#65676b]"
                   }`}
-                  onClick={() => setLike(!like)}
+                  onClick={() => handleLikes(data.id)}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -118,7 +137,7 @@ const Page = () => {
                   </svg>
                   <span className="font-semibold">Like</span>
                 </button>
-                <button className="flex items-center col-span-1 gap-x-2 hover:bg-slate-200 rounded justify-center py-1 text-[#65676b]">
+                <button className="flex  items-center hover:text-white col-span-1 gap-x-2 hover:bg-gray-800 border border-gray-600 rounded justify-center py-1 text-[#65676b]">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

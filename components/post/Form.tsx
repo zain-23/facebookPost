@@ -51,6 +51,7 @@ export default function Form() {
         userName: user.fullName,
         userImg: user.imageUrl,
         userEmail: user?.primaryEmailAddress?.emailAddress,
+        likes: [],
       });
       // Get the added document using getDoc
       const postDocSnap = await getDoc(res);
@@ -88,7 +89,7 @@ export default function Form() {
                     name="description"
                     onChange={(e) => setDescription(e.target.value)}
                     rows={3}
-                    className="block w-full rounded-md border-0 p-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-400 sm:text-sm sm:leading-6"
+                    className="block w-full rounded-md bg-gray-800 text-white border-0 p-2 shadow-sm ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-400 sm:text-sm sm:leading-6"
                     defaultValue={""}
                     required
                   />
@@ -101,7 +102,7 @@ export default function Form() {
                 >
                   Photo
                 </label>
-                <div className="mt-2 flex justify-center items-center rounded-lg h-80 border border-dashed p-2">
+                <div className="mt-2 flex justify-center bg-gray-800 items-center rounded-lg h-80 border border-dashed p-2">
                   {imagePath === "" ? (
                     <div className="text-center">
                       <PhotoIcon
